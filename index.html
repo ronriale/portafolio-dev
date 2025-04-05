@@ -1,0 +1,694 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registro de Recolección de Café</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --black: #121212;
+            --dark-gray: #2A2A2A;
+            --medium-gray: #4A4A4A;
+            --light-gray: #E0E0E0;
+            --lighter-gray: #F5F5F5;
+            --white: #FFFFFF;
+            --primary: #000000;
+            --accent: #4A4A4A;
+            --success: #2E7D32;
+            --error: #C62828;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            line-height: 1.6;
+            background-color: var(--lighter-gray);
+            color: var(--black);
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background-color: var(--white);
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            overflow: hidden;
+        }
+
+        .app-header {
+            background-color: var(--black);
+            color: var(--white);
+            padding: 24px 30px;
+            text-align: center;
+        }
+
+        .app-header h1 {
+            font-size: 24px;
+            font-weight: 600;
+            margin-bottom: 4px;
+            letter-spacing: -0.5px;
+        }
+
+        .app-header p {
+            font-size: 14px;
+            opacity: 0.8;
+            font-weight: 300;
+        }
+
+        .app-content {
+            padding: 30px;
+        }
+
+        .section {
+            margin-bottom: 32px;
+            background-color: var(--white);
+            border-radius: 6px;
+            border: 1px solid var(--light-gray);
+            padding: 24px;
+        }
+
+        .section-title {
+            color: var(--black);
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            letter-spacing: -0.3px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: var(--dark-gray);
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 12px 16px;
+            border: 1px solid var(--light-gray);
+            border-radius: 4px;
+            font-family: 'Inter', sans-serif;
+            font-size: 14px;
+            transition: all 0.2s ease;
+            background-color: var(--white);
+            color: var(--black);
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: var(--medium-gray);
+            box-shadow: 0 0 0 2px rgba(74, 74, 74, 0.1);
+        }
+
+        .day-input {
+            display: none;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .day-input.active {
+            display: block;
+        }
+
+        .nav-buttons {
+            display: flex;
+            justify-content: space-between;
+            gap: 12px;
+            margin: 24px 0;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 12px 20px;
+            border-radius: 4px;
+            font-family: 'Inter', sans-serif;
+            font-size: 13px;
+            font-weight: 500;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border: none;
+            flex: 1;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .btn-primary {
+            background-color: var(--black);
+            color: var(--white);
+        }
+
+        .btn-primary:hover {
+            background-color: var(--dark-gray);
+            transform: translateY(-1px);
+        }
+
+        .btn-secondary {
+            background-color: var(--white);
+            color: var(--black);
+            border: 1px solid var(--light-gray);
+        }
+
+        .btn-secondary:hover {
+            background-color: var(--lighter-gray);
+            transform: translateY(-1px);
+        }
+
+        .btn-success {
+            background-color: var(--success);
+            color: var(--white);
+        }
+
+        .btn-success:hover {
+            background-color: #1B5E20;
+            transform: translateY(-1px);
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none !important;
+        }
+
+        .results {
+            background-color: var(--lighter-gray);
+            border-left: 3px solid var(--success);
+            padding: 20px;
+            border-radius: 4px;
+            margin-top: 30px;
+            display: none;
+        }
+
+        .results-title {
+            color: var(--black);
+            font-size: 16px;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            font-weight: 600;
+        }
+
+        .result-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid var(--light-gray);
+        }
+
+        .result-item:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+
+        .result-label {
+            font-weight: 500;
+            color: var(--medium-gray);
+            font-size: 14px;
+        }
+
+        .result-value {
+            font-weight: 600;
+            color: var(--black);
+            font-size: 14px;
+        }
+
+        .table-container {
+            overflow-x: auto;
+            margin-top: 20px;
+            border-radius: 6px;
+            border: 1px solid var(--light-gray);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 13px;
+        }
+
+        th, td {
+            padding: 14px 16px;
+            text-align: left;
+            border-bottom: 1px solid var(--light-gray);
+        }
+
+        th {
+            background-color: var(--black);
+            color: var(--white);
+            font-weight: 500;
+            position: sticky;
+            top: 0;
+            text-transform: uppercase;
+            font-size: 12px;
+            letter-spacing: 0.5px;
+        }
+
+        tr:nth-child(even) {
+            background-color: var(--lighter-gray);
+        }
+
+        tr:hover {
+            background-color: #F0F0F0;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(8px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .day-indicator {
+            background-color: var(--lighter-gray);
+            color: var(--black);
+            padding: 8px 16px;
+            border-radius: 4px;
+            font-weight: 500;
+            margin-bottom: 16px;
+            display: inline-flex;
+            align-items: center;
+            font-size: 13px;
+            border: 1px solid var(--light-gray);
+        }
+
+        .price-input {
+            position: relative;
+        }
+
+        .price-input::before {
+            content: "$";
+            position: absolute;
+            left: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--medium-gray);
+            font-weight: 500;
+            font-size: 14px;
+        }
+
+        #price {
+            padding-left: 28px;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 12px;
+            margin-top: 24px;
+        }
+
+        .alert {
+            padding: 14px 16px;
+            border-radius: 4px;
+            margin-bottom: 20px;
+            font-size: 13px;
+            display: none;
+            border-left: 3px solid;
+        }
+
+        .alert-success {
+            background-color: #E8F5E9;
+            color: var(--success);
+            border-left-color: var(--success);
+        }
+
+        .alert-error {
+            background-color: #FFEBEE;
+            color: var(--error);
+            border-left-color: var(--error);
+        }
+
+        .icon {
+            margin-right: 8px;
+            font-size: 16px;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                border-radius: 0;
+            }
+            
+            .app-content {
+                padding: 20px;
+            }
+            
+            .nav-buttons, .action-buttons {
+                flex-direction: column;
+            }
+            
+            .section {
+                padding: 20px;
+            }
+            
+            th, td {
+                padding: 12px 14px;
+                font-size: 12px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="app-header">
+            <h1>Registro de Recolección de Café</h1>
+            <p>Sistema de seguimiento de producción cafetalera</p>
+        </div>
+        
+        <div class="app-content">
+            <div id="alert" class="alert" style="display: none;"></div>
+            
+            <div class="section">
+                <h2 class="section-title">
+                    <span class="icon">📋</span> Información del Recolector
+                </h2>
+                
+                <div class="form-group">
+                    <label for="username">Nombre completo</label>
+                    <input type="text" id="username" class="form-control" placeholder="Ingrese su nombre completo" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="document">Número de documento</label>
+                    <input type="text" id="document" class="form-control" placeholder="Ingrese su número de documento" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="phone">Número de celular</label>
+                    <input type="tel" id="phone" class="form-control" placeholder="Ingrese su número de contacto" required>
+                </div>
+                
+                <div class="form-group price-input">
+                    <label for="price">Precio por kilo (COP)</label>
+                    <input type="number" id="price" class="form-control" min="0" placeholder="Ingrese el precio por kilo" required>
+                </div>
+            </div>
+            
+            <div class="section">
+                <h2 class="section-title">
+                    <span class="icon">📅</span> Registro Diario de Producción
+                </h2>
+                
+                <div id="day1" class="day-input active">
+                    <div class="day-indicator">
+                        <span class="icon">📅</span> Día 1 - Lunes
+                    </div>
+                    <div class="form-group">
+                        <label for="kilos1">Cantidad recolectada (kg)</label>
+                        <input type="number" id="kilos1" class="form-control" min="0" step="0.01" placeholder="Ej: 12.5" required>
+                    </div>
+                </div>
+                
+                <div id="day2" class="day-input">
+                    <div class="day-indicator">
+                        <span class="icon">📅</span> Día 2 - Martes
+                    </div>
+                    <div class="form-group">
+                        <label for="kilos2">Cantidad recolectada (kg)</label>
+                        <input type="number" id="kilos2" class="form-control" min="0" step="0.01" placeholder="Ej: 15.0" required>
+                    </div>
+                </div>
+                
+                <div id="day3" class="day-input">
+                    <div class="day-indicator">
+                        <span class="icon">📅</span> Día 3 - Miércoles
+                    </div>
+                    <div class="form-group">
+                        <label for="kilos3">Cantidad recolectada (kg)</label>
+                        <input type="number" id="kilos3" class="form-control" min="0" step="0.01" placeholder="Ej: 18.2" required>
+                    </div>
+                </div>
+                
+                <div id="day4" class="day-input">
+                    <div class="day-indicator">
+                        <span class="icon">📅</span> Día 4 - Jueves
+                    </div>
+                    <div class="form-group">
+                        <label for="kilos4">Cantidad recolectada (kg)</label>
+                        <input type="number" id="kilos4" class="form-control" min="0" step="0.01" placeholder="Ej: 14.7" required>
+                    </div>
+                </div>
+                
+                <div id="day5" class="day-input">
+                    <div class="day-indicator">
+                        <span class="icon">📅</span> Día 5 - Viernes
+                    </div>
+                    <div class="form-group">
+                        <label for="kilos5">Cantidad recolectada (kg)</label>
+                        <input type="number" id="kilos5" class="form-control" min="0" step="0.01" placeholder="Ej: 20.1" required>
+                    </div>
+                </div>
+                
+                <div class="nav-buttons">
+                    <button id="prevBtn" class="btn btn-secondary" onclick="prevDay()" disabled>
+                        <span class="icon">←</span> Anterior
+                    </button>
+                    <button id="nextBtn" class="btn btn-secondary" onclick="nextDay()">
+                        Siguiente <span class="icon">→</span>
+                    </button>
+                </div>
+                
+                <div class="action-buttons">
+                    <button onclick="calculate()" class="btn btn-primary">
+                        <span class="icon">🧮</span> Calcular Totales
+                    </button>
+                    <button onclick="saveData()" class="btn btn-success">
+                        <span class="icon">💾</span> Guardar Registro
+                    </button>
+                </div>
+                
+                <div id="results" class="results">
+                    <h3 class="results-title">
+                        <span class="icon">📊</span> Resumen Semanal
+                    </h3>
+                    <div class="result-item">
+                        <span class="result-label">Total kilos recolectados:</span>
+                        <span id="totalKilos" class="result-value">0 kg</span>
+                    </div>
+                    <div class="result-item">
+                        <span class="result-label">Ganancia total:</span>
+                        <span id="totalMoney" class="result-value">$0 COP</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="section">
+                <h2 class="section-title">
+                    <span class="icon">📋</span> Historial de Recolección
+                </h2>
+                
+                <div class="table-container">
+                    <table id="historyTable">
+                        <thead>
+                            <tr>
+                                <th>Usuario</th>
+                                <th>Documento</th>
+                                <th>Teléfono</th>
+                                <th>Precio/kg</th>
+                                <th>Total Kilos</th>
+                                <th>Ganancia</th>
+                                <th>Fecha</th>
+                            </tr>
+                        </thead>
+                        <tbody id="historyBody">
+                            <!-- Los registros se agregarán aquí -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentDay = 1;
+        const maxDays = 5;
+        
+        // Mostrar el día actual
+        function showDay(day) {
+            document.querySelectorAll('.day-input').forEach(div => {
+                div.classList.remove('active');
+            });
+            document.getElementById(`day${day}`).classList.add('active');
+            
+            // Actualizar botones de navegación
+            document.getElementById('prevBtn').disabled = day === 1;
+            document.getElementById('nextBtn').disabled = day === maxDays;
+        }
+        
+        function nextDay() {
+            if (currentDay < maxDays) {
+                currentDay++;
+                showDay(currentDay);
+            }
+        }
+        
+        function prevDay() {
+            if (currentDay > 1) {
+                currentDay--;
+                showDay(currentDay);
+            }
+        }
+        
+        function showAlert(message, type = 'success') {
+            const alertDiv = document.getElementById('alert');
+            alertDiv.textContent = message;
+            alertDiv.className = `alert alert-${type}`;
+            alertDiv.style.display = 'block';
+            
+            setTimeout(() => {
+                alertDiv.style.display = 'none';
+            }, 3000);
+        }
+        
+        function calculate() {
+            // Validar que todos los campos estén completos
+            const username = document.getElementById('username').value;
+            const documentNum = document.getElementById('document').value;
+            const phone = document.getElementById('phone').value;
+            const price = parseFloat(document.getElementById('price').value);
+            
+            if (!username || !documentNum || !phone || isNaN(price)) {
+                showAlert('Por favor complete todos los campos obligatorios', 'error');
+                return;
+            }
+            
+            // Obtener kilajes de cada día
+            let totalKilos = 0;
+            for (let i = 1; i <= maxDays; i++) {
+                const kilos = parseFloat(document.getElementById(`kilos${i}`).value) || 0;
+                totalKilos += kilos;
+            }
+            
+            // Calcular ganancia total
+            const totalMoney = totalKilos * price;
+            
+            // Mostrar resultados
+            document.getElementById('totalKilos').textContent = `${totalKilos.toFixed(2)} kg`;
+            document.getElementById('totalMoney').textContent = formatMoney(totalMoney);
+            
+            // Mostrar sección de resultados con animación
+            const resultsDiv = document.getElementById('results');
+            resultsDiv.style.display = 'block';
+            resultsDiv.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
+        
+        function formatMoney(amount) {
+            return new Intl.NumberFormat('es-CO', {
+                style: 'currency',
+                currency: 'COP',
+                minimumFractionDigits: 0
+            }).format(amount);
+        }
+        
+        function saveData() {
+            // Validar que se hayan calculado los totales
+            const resultsDiv = document.getElementById('results');
+            if (resultsDiv.style.display === 'none') {
+                showAlert('Por favor calcule los totales antes de guardar', 'error');
+                return;
+            }
+            
+            // Obtener datos del formulario
+            const username = document.getElementById('username').value;
+            const documentNum = document.getElementById('document').value;
+            const phone = document.getElementById('phone').value;
+            const price = parseFloat(document.getElementById('price').value);
+            const totalKilos = parseFloat(document.getElementById('totalKilos').textContent);
+            const totalMoney = parseFloat(document.getElementById('totalMoney').textContent.replace(/[^0-9]/g, ''));
+            
+            // Obtener detalles diarios
+            let dailyDetails = [];
+            for (let i = 1; i <= maxDays; i++) {
+                dailyDetails.push({
+                    day: i,
+                    kilos: parseFloat(document.getElementById(`kilos${i}`).value) || 0
+                });
+            }
+            
+            // Crear objeto con los datos
+            const record = {
+                id: Date.now(),
+                username,
+                document: documentNum,
+                phone,
+                price,
+                totalKilos,
+                totalMoney,
+                dailyDetails,
+                date: new Date().toLocaleDateString('es-CO', {
+                    year: 'numeric',
+                    month: 'long',
+                    day: 'numeric'
+                }),
+                timestamp: Date.now()
+            };
+            
+            // Obtener registros existentes o crear array vacío
+            let records = JSON.parse(localStorage.getItem('coffeeRecords')) || [];
+            
+            // Agregar nuevo registro
+            records.push(record);
+            
+            // Guardar en localStorage
+            localStorage.setItem('coffeeRecords', JSON.stringify(records));
+            
+            // Actualizar tabla de historial
+            updateHistoryTable();
+            
+            // Mostrar mensaje de éxito
+            showAlert('Registro guardado exitosamente');
+            
+            // Desplazarse al historial
+            document.querySelector('#historyTable').scrollIntoView({ behavior: 'smooth' });
+        }
+        
+        function updateHistoryTable() {
+            const records = JSON.parse(localStorage.getItem('coffeeRecords')) || [];
+            const tbody = document.getElementById('historyBody');
+            
+            // Limpiar tabla
+            tbody.innerHTML = '';
+            
+            // Ordenar registros por fecha (más reciente primero)
+            records.sort((a, b) => b.timestamp - a.timestamp);
+            
+            // Agregar registros a la tabla
+            records.forEach(record => {
+                const row = document.createElement('tr');
+                
+                row.innerHTML = `
+                    <td>${record.username}</td>
+                    <td>${record.document}</td>
+                    <td>${record.phone}</td>
+                    <td>${formatMoney(record.price)}/kg</td>
+                    <td>${record.totalKilos.toFixed(2)} kg</td>
+                    <td>${formatMoney(record.totalMoney)}</td>
+                    <td>${record.date}</td>
+                `;
+                
+                tbody.appendChild(row);
+            });
+        }
+        
+        // Cargar historial al iniciar la página
+        window.onload = function() {
+            updateHistoryTable();
+            showDay(1);
+        };
+    </script>
+</body>
+</html>
